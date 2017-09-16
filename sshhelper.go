@@ -190,8 +190,9 @@ func addPasswordAuth(user, addr string, auths []ssh.AuthMethod) []ssh.AuthMethod
 func tryAgentConnect(user, addr string) (client *ssh.Client) {
 	if auth, ok := getAgentAuth(); ok {
 		config := &ssh.ClientConfig{
-			User: user,
-			Auth: []ssh.AuthMethod{auth},
+			User:            user,
+			HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+			Auth:            []ssh.AuthMethod{auth},
 		}
 		client, _ = ssh.Dial("tcp", addr, config)
 	}
@@ -212,8 +213,9 @@ func sshConnect(user, addr, keypath string) (client *ssh.Client) {
 	auths = addPasswordAuth(user, addr, auths)
 
 	config := &ssh.ClientConfig{
-		User: user,
-		Auth: auths,
+		User:            user,
+		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+		Auth:            auths,
 	}
 	client, err := ssh.Dial("tcp", addr, config)
 	if err != nil {
